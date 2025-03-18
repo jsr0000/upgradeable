@@ -6,13 +6,16 @@ import {BoxV1} from "../src/BoxV1.sol";
 import {ERC1967Proxy} from "lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 contract DeployBox is Script {
-    function run() public {
+    function run() public returns (address) {
         address proxy = deployBox();
         return proxy; 
     }
 
     function deployBox() internal returns (address) {
-        BoxV1 box = new BoxV1(); 
+        vm.startBroadcast();
+        BoxV1 box = new BoxV1();
+        ERC1967Proxy proxy = new ERC1967Proxy(address(box), "");
+        vm.stopBroadcast();
+        return address(proxy);
     }
 }
-    
